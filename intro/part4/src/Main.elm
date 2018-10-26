@@ -109,6 +109,7 @@ viewBanner =
 
 {-| 👉 TODO: Replace this comment with a type annotation for `viewTag`
 -}
+viewTag : String -> String -> Html Msg
 viewTag selectedTagName tagName =
     let
         otherClass =
@@ -125,6 +126,8 @@ viewTag selectedTagName tagName =
         [ text tagName ]
 
 
+{-| 👉 TODO: Replace this comment with a type annotation for `viewTags`
+-}
 viewTags : Model -> Html Msg
 viewTags model =
     div [ class "tag-list" ] (List.map (viewTag model.selectedTag) model.tags)
