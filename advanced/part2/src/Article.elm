@@ -1,23 +1,22 @@
-module Article
-    exposing
-        ( Article
-        , Full
-        , Preview
-        , author
-        , body
-        , favorite
-        , favoriteButton
-        , fetch
-        , fromPreview
-        , fullDecoder
-        , mapAuthor
-        , metadata
-        , previewDecoder
-        , slug
-        , unfavorite
-        , unfavoriteButton
-        , url
-        )
+module Article exposing
+    ( Article
+    , Full
+    , Preview
+    , author
+    , body
+    , favorite
+    , favoriteButton
+    , fetch
+    , fromPreview
+    , fullDecoder
+    , mapAuthor
+    , metadata
+    , previewDecoder
+    , slug
+    , unfavorite
+    , unfavoriteButton
+    , url
+    )
 
 {-| The interface to the Article data structure.
 
@@ -158,9 +157,13 @@ slug (Article internals _) =
     internals.slug
 
 
+
+--"👉 TODO make this return the article's body"
+
+
 body : Article Full -> Body
-body _ =
-    "👉 TODO make this return the article's body"
+body (Article _ (Full b)) =
+    b
 
 
 
@@ -180,9 +183,13 @@ mapAuthor transform (Article info extras) =
     Article { info | author = transform info.author } extras
 
 
+
+-- "👉  TODO convert from an Article Preview to an Article Full"
+
+
 fromPreview : Body -> Article Preview -> Article Full
-fromPreview _ _ =
-    "👉 TODO convert from an Article Preview to an Article Full"
+fromPreview b (Article internals Preview) =
+    Article internals (Full b)
 
 
 
@@ -196,11 +203,15 @@ previewDecoder maybeCred =
         |> hardcoded Preview
 
 
+
+{- "👉 TODO use `Body.decoder` (which is a `Decoder Body`) to decode the body into this Article Full" -}
+
+
 fullDecoder : Maybe Cred -> Decoder (Article Full)
 fullDecoder maybeCred =
     Decode.succeed Article
         |> custom (internalsDecoder maybeCred)
-        |> required "body" "👉 TODO use `Body.decoder` (which is a `Decoder Body`) to decode the body into this Article Full"
+        |> required "body" (Decode.map Full Body.decoder)
 
 
 internalsDecoder : Maybe Cred -> Decoder Internals

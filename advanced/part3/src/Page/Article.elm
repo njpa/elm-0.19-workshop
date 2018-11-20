@@ -71,6 +71,7 @@ init session slug =
       , article = Loading
       }
     , Cmd.batch
+        -- fetch : Maybe Cred -> Slug -> Http.Request (Article Full)
         {- 👉 TODO: Oops! These are all `Task` values, not `Cmd` values!
 
               Use `|> Task.attempt` and `|> Task.perform` to make this compile.
@@ -82,10 +83,14 @@ init session slug =
         -}
         [ Article.fetch maybeCred slug
             |> Http.toTask
+            |> Task.attempt CompletedLoadArticle
         , Comment.list maybeCred slug
             |> Http.toTask
+            |> Task.attempt CompletedLoadComments
         , Time.here
+            |> Task.perform GotTimeZone
         , Loading.slowThreshold
+            |> Task.perform (\_ -> PassedSlowLoadThreshold)
         ]
     )
 
